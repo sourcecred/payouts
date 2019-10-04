@@ -18,6 +18,8 @@
     "LICENSE-MIT"
   ],
   "scripts": {
+    "check-pretty": "prettier --list-different '**/*.js'",
+    "prettify": "prettier --write '**/*.js'",
     "release": "xyz --edit --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --increment"
   },
   "engines": {
@@ -25,6 +27,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "prettier": "^1.18.2",
     "xyz": "^3.0.0"
   }
 }
