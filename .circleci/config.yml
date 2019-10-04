@@ -1,0 +1,52 @@
+# JavaScript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+# See https://circleci.com/docs/2.0/config-intro/#section=configuration for spec
+#
+version: 2.1
+
+executors:
+  node10:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo
+  node12:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/repo
+
+commands:
+  set_up_node_modules:
+    description: "load node_modules, updating and storing back into cache if necessary"
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fall back to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+jobs:
+  test_10:
+    executor: node10
+    steps:
+      - checkout
+      - set_up_node_modules
+      - run: npm test
+  test_12:
+    executor: node12
+    steps:
+      - checkout
+      - set_up_node_modules
+      - run: npm test
+
+workflows:
+  version: 2.0
+  commit:
+    jobs:
+      - test_10
+      - test_12
