@@ -14,12 +14,12 @@ const sumIntervalCred = ({users}, intervalIndex) =>
   users.reduce((sum, u) => sum + cred(u, intervalIndex), 0);
 
 const fastComponent = ({users}, intervalIndex, totalPayout) => {
-  const totalCred = sumIntervalCred({users}, intervalIndex);
+  const totalIntervalCred = sumIntervalCred({users}, intervalIndex);
   return users.reduce(
     (map, u) => ({
       ...map,
       [alias(u)]: Math.floor(
-        (totalPayout * cred(u, intervalIndex)) / totalCred
+        (totalPayout * cred(u, intervalIndex)) / totalIntervalCred
       ),
     }),
     {}
