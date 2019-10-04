@@ -1,0 +1,30 @@
+{
+  "name": "@sourcecred/payouts",
+  "version": "0.0.1-alpha.1",
+  "license": "(MIT OR Apache-2.0)",
+  "homepage": "https://github.com/sourcecred/payouts",
+  "bugs": {
+    "url": "https://github.com/sourcecred/payouts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sourcecred/payouts.git"
+  },
+  "main": "src",
+  "files": [
+    "src",
+    "LICENSE",
+    "LICENSE-APACHE",
+    "LICENSE-MIT"
+  ],
+  "scripts": {
+    "release": "xyz --edit --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --increment"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "xyz": "^3.0.0"
+  }
+}
