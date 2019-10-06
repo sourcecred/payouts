@@ -13,11 +13,11 @@ const cred = (user, intervalIndex) => user.intervalCred[intervalIndex];
 
 const createTotalCredMap = ({users}, intervalIndex) =>
   users.reduce(
-    (map, u) => ({
-      ...map,
-      [alias(u)]: u.intervalCred.slice(0, intervalIndex + 1).reduce(add, 0),
-    }),
-    {}
+    (map, u) => {
+      map.set(alias(u), u.intervalCred.slice(0, intervalIndex + 1).reduce(add, 0));
+      return map;
+    },
+    new Map()
   );
 
 const sumIntervalCred = ({users}, intervalIndex) =>
@@ -26,55 +26,57 @@ const sumIntervalCred = ({users}, intervalIndex) =>
 const fastComponent = ({users}, intervalIndex, totalPayout) => {
   const totalIntervalCred = sumIntervalCred({users}, intervalIndex);
   return users.reduce(
-    (map, u) => ({
-      ...map,
-      [alias(u)]: Math.floor(
+    (map, u) => {
+      map.set(alias(u), Math.floor(
         (totalPayout * cred(u, intervalIndex)) / totalIntervalCred
-      ),
-    }),
-    {}
+      ));
+      return map;
+    },
+    new Map()
   );
 };
 
 const createPastPayoutMap = (history) => {
-  const result = {};
+  const result = new Map();
   for (const record of history) {
     for (const {alias: a, slow, fast} of record.payments) {
-      result[a] = (result[a] || 0) + fast + slow;
+      const payoutSoFar = (result.get(a) || 0);
+      result.set(a, payoutSoFar + fast + slow);
     }
   }
   return result;
 };
 
 const createUnderpaidMap = (totalCredMap, pastPayoutMap, fastPayoutMap, targetPayoutPerCred) =>
-  Object.keys(totalCredMap).reduce(
+  Array.from(totalCredMap.keys()).reduce(
     (map, a) => {
-      const target = Math.floor(totalCredMap[a] * targetPayoutPerCred);
-      const past = pastPayoutMap[a] || 0;
-      const fast = fastPayoutMap[a] || 0;
+      const target = Math.floor(totalCredMap.get(a) * targetPayoutPerCred);
+      const past = pastPayoutMap.get(a) || 0;
+      const fast = fastPayoutMap.get(a) || 0;
       const underPaid = target - past - fast;
-      return {
-        ...map,
-        [a]: Math.max(underPaid, 0)
-      };
+      map.set(a, Math.max(underPaid, 0));
+      return map;
     },
-    {}
+    new Map()
   );
 
 const slowComponent = (history, {users}, intervalIndex, fastPayoutMap, targetPayout, totalSlowPayout) => {
   const pastPayoutMap = createPastPayoutMap(history);
   const totalCredMap = createTotalCredMap({users}, intervalIndex);
-  const pastPayout = Object.values(pastPayoutMap).reduce(add, 0);
-  const totalCred = Object.values(totalCredMap).reduce(add, 0);
+  const pastPayout = Array.from(pastPayoutMap.values()).reduce(add, 0);
+  const totalCred = Array.from(totalCredMap.values()).reduce(add, 0);
 
   const targetPayoutPerCred = (pastPayout + targetPayout) / totalCred;
   const underPaidMap = createUnderpaidMap(totalCredMap, pastPayoutMap, fastPayoutMap, targetPayoutPerCred);
-  const underPaid = Object.values(underPaidMap).reduce(add, 0);
+  const underPaid = Array.from(underPaidMap.values()).reduce(add, 0);
 
   const payRatio = totalSlowPayout / underPaid;
-  return Object.keys(underPaidMap).reduce(
-    (map, a) => ({...map, [a]: Math.floor(underPaidMap[a] * payRatio)}),
-    {}
+  return Array.from(underPaidMap.keys()).reduce(
+    (map, a) => {
+      map.set(a, Math.floor(underPaidMap.get(a) * payRatio));
+      return map;
+    },
+    new Map()
   );
 };
 
@@ -83,8 +85,8 @@ const createPayoutArray = ({users}, fastPayoutMap, slowPayoutMap) =>
     const a = alias(u);
     return {
       alias: a,
-      fast: fastPayoutMap[a],
-      slow: slowPayoutMap[a],
+      fast: fastPayoutMap.get(a),
+      slow: slowPayoutMap.get(a),
     };
   });
 
