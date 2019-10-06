@@ -5,7 +5,7 @@ const [distributionWk1, distributionWk2] = require("./data/history-wk2.json");
 
 const {fastSlow} = require("../../src");
 
-test("Expect distribution to match snapshot for wk2", () => {
+test("Expect distribution record to match snapshot for wk2", () => {
   // Given
   const history = [distributionWk1];
   const scores = scoresWk2;
@@ -25,5 +25,5 @@ test("Expect distribution to match snapshot for wk2", () => {
   );
 
   // Then
-  expect(distribution).toEqual(distributionWk2);
+  expect(distribution.record).toEqual(distributionWk2);
 });
