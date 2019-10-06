@@ -20,13 +20,16 @@
   "scripts": {
     "check-pretty": "prettier --list-different '**/*.js'",
     "prettify": "prettier --write '**/*.js'",
-    "release": "xyz --edit --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --increment"
+    "release": "xyz --edit --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --increment",
+    "test": "npm run unit",
+    "unit": "jest"
   },
   "engines": {
     "node": ">=10.0.0"
   },
   "dependencies": {},
   "devDependencies": {
+    "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "xyz": "^3.0.0"
   }
