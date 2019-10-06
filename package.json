@@ -20,8 +20,8 @@
   "scripts": {
     "check-pretty": "prettier --list-different '**/*.js'",
     "prettify": "prettier --write '**/*.js'",
-    "release": "xyz --edit --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --increment",
-    "release:alpha": "xyz --edit --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --publish-command 'npm publish --tag=alpha' --prerelease-label alpha --increment",
+    "release": "xyz --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --increment",
+    "release:alpha": "xyz --repo git@github.com:sourcecred/payouts.git --tag 'vX.Y.Z' --publish-command 'npm publish --tag=alpha' --prerelease-label alpha --increment",
     "test": "npm run unit",
     "unit": "jest"
   },
